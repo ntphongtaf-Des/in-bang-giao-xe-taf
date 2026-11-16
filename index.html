@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title data-keep>In Bảng Giao Xe</title>
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}#print-area{display:none}
+@media print{@page{size:A3 landscape;margin:0}html,body{background:#fff!important}body>*:not(#print-area){display:none!important}#print-area{display:block!important}#print-area img{display:block;width:420mm;height:297mm;max-width:none;break-after:page;page-break-after:always}#print-area img:last-child{break-after:auto;page-break-after:auto}}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@300;500;600&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Great+Vibes&display=swap" data-keep>
+<style data-keep>
+/* Layout: print-desk tool. Left = choose template + type names, right = live A3 sheet preview + download. */
+:root {
+  --bg: #f6f3f3;
+  --surface: #ffffff;
+  --surface-2: #efe9e9;
+  --fg: #231c1d;
+  --muted: #6d6264;
+  --line: #e0d7d8;
+  --accent: #c8102e;
+  --accent-ink: #ffffff;
+  --accent-soft: #fbe5e8;
+  --ok: #1f7a4d;
+  --ok-soft: #e3f3ea;
+  --warn: #9a5b00;
+  --warn-soft: #fdf1dc;
+  --sheet-bg: #d9d2d3;
+  --font-ui: "Be Vietnam Pro", system-ui, "Segoe UI", Arial, sans-serif;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171314; --surface: #221c1d; --surface-2: #2c2526; --fg: #f3eded; --muted: #ad9fa1;
+    --line: #3a3132; --accent: #f0485f; --accent-ink: #1a0d10; --accent-soft: #3d1b21;
+    --ok: #5fcf95; --warn: #e9a64a; --sheet-bg: #0f0c0c; --ok-soft: #13301f; --warn-soft: #3a2a12; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171314; --surface: #221c1d; --surface-2: #2c2526; --fg: #f3eded; --muted: #ad9fa1;
+  --line: #3a3132; --accent: #f0485f; --accent-ink: #1a0d10; --accent-soft: #3d1b21;
+  --ok: #5fcf95; --warn: #e9a64a; --sheet-bg: #0f0c0c; --ok-soft: #13301f; --warn-soft: #3a2a12; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 15px; line-height: 1.5; }
+#app { max-width: 1320px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+header.top h1 { font-family: var(--font-display); font-weight: 600; font-size: 34px; line-height: 1.05; margin: 0; letter-spacing: .01em; text-wrap: balance; }
+header.top h1 span { color: var(--accent); }
+header.top p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; }
+button, .btn { font: inherit; font-weight: 600; font-size: 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); padding: 8px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+button:hover { border-color: var(--muted); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.primary:hover { filter: brightness(1.07); }
+button.big { font-size: 16px; padding: 12px 20px; width: 100%; justify-content: center; }
+button.ghost { background: transparent; }
+button.icon { padding: 6px 9px; min-width: 34px; justify-content: center; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px; align-items: start; }
+@media (max-width: 980px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; min-width: 0; }
+.col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.step-h { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.step-n { font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.step-h h2 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin: 0; line-height: 1.1; }
+.hint { color: var(--muted); font-size: 13px; margin: 0; }
+.tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.tpl-card { border: 2px solid var(--line); border-radius: 8px; padding: 6px; background: var(--surface-2); cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 6px; align-items: stretch; font-weight: 500; }
+.tpl-card canvas { width: 100%; height: auto; display: block; border-radius: 4px; background: #fff; }
+.tpl-card[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.tpl-card .nm { font-size: 13px; padding: 0 2px 2px; }
+.rows { display: flex; flex-direction: column; gap: 10px; }
+.row { border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 10px; background: var(--surface); }
+.row-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.row-top .lbl { font-family: var(--font-display); font-weight: 600; font-size: 17px; margin-right: auto; }
+.row-top .acts { display: flex; gap: 4px; }
+label.f { display: grid; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 500; min-width: 0; }
+input[type="text"], input[type="number"], select, textarea { font: inherit; font-size: 15px; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 7px; padding: 8px 10px; width: 100%; min-width: 0; }
+input.name-in { font-size: 17px; font-weight: 600; }
+.row-fields { display: grid; grid-template-columns: minmax(0, 1fr) 92px; gap: 10px; align-items: end; }
+.row-fields .wide { grid-column: 1 / -1; }
+.row-sub { display: grid; grid-template-columns: minmax(0, 1fr) 92px; gap: 10px; }
+details.paste { border: 1px dashed var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+details.paste summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+details.paste textarea { margin-top: 10px; min-height: 110px; resize: vertical; }
+.paste-acts { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.add-row { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+.preview-col { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+@media (max-width: 980px) { .preview-col { position: static; } }
+.summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.pill { display: inline-flex; gap: 6px; align-items: center; background: var(--surface-2); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sheets { display: flex; flex-direction: column; gap: 14px; background: var(--sheet-bg); border-radius: 8px; padding: 14px; max-height: 62vh; overflow: auto; }
+@media (max-width: 980px) { .sheets { max-height: none; } }
+.sheet { display: grid; gap: 4px; }
+.sheet canvas { width: 100%; height: auto; display: block; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.sheet .cap { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.toggles { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; margin: 12px 0; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.how { margin: 12px 0 0; padding: 12px 14px; background: var(--surface-2); border-radius: 8px; font-size: 13.5px; }
+.how ol { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 2px; }
+.status { font-size: 13.5px; margin-top: 8px; min-height: 1.4em; }
+.status.ok { color: var(--ok); } .status.err { color: var(--accent); } .status.warn { color: var(--warn); }
+.logo-row { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; font-size: 14px; }
+.logo-size { display: flex; align-items: center; gap: 10px; flex: 1 1 220px; min-width: 0; color: var(--muted); font-size: 13px; font-weight: 500; }
+.logo-size input { flex: 1; min-width: 0; }
+.logo-size .lv { font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: right; color: var(--fg); font-weight: 600; }
+.logo-row.off .logo-size { opacity: .45; }
+.modal-bg { position: fixed; inset: 0; z-index: 50; background: rgba(20, 12, 14, .55); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.modal { background: var(--surface); color: var(--fg); border-radius: 14px; padding: 26px 24px 20px; width: min(440px, 100%); box-shadow: 0 18px 50px rgba(0,0,0,.35); display: grid; gap: 16px; text-align: center; }
+.modal h2 { font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 1.15; margin: 0; text-wrap: balance; }
+.modal .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal .choices button { flex-direction: column; justify-content: center; padding: 14px 10px; font-size: 18px; gap: 2px; }
+.modal .choices button small { font-weight: 500; font-size: 12.5px; opacity: .85; }
+.modal .note { margin: 0; font-size: 12.5px; color: var(--muted); }
+.modal .note strong { color: var(--accent); font-weight: 600; }
+.nudge { display: none; }
+.nudge.odd, .nudge.even { display: grid; gap: 6px; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; font-size: 14px; }
+.nudge.odd { background: var(--warn-soft); border: 1px solid var(--warn); }
+.nudge.odd strong { color: var(--warn); }
+.nudge.even { background: var(--ok-soft); border: 1px solid var(--ok); color: var(--ok); }
+.nudge p { margin: 0; }
+.nudge .paste-acts { margin-top: 2px; }
+.fallback-imgs { display: grid; gap: 10px; margin-top: 10px; }
+.fallback-imgs img { width: 100%; border: 1px solid var(--line); -webkit-touch-callout: default; }
+.fb-fig { margin: 0; display: grid; gap: 4px; }
+form.login { max-width: 480px; display: grid; gap: 12px; }
+input[type="password"] { font: inherit; font-size: 15px; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 7px; padding: 8px 10px; width: 100%; min-width: 0; }
+.empty { padding: 18px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 8px; }
+/* admin */
+.admin { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .admin { grid-template-columns: minmax(0, 1fr); } }
+.tlist { display: flex; flex-direction: column; gap: 8px; }
+.titem { display: flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 6px; background: var(--surface); cursor: pointer; text-align: left; font-weight: 500; width: 100%; }
+.titem[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.titem canvas { width: 90px; height: auto; background: #fff; border-radius: 3px; flex: none; }
+.titem .nm { font-size: 13px; min-width: 0; overflow-wrap: anywhere; }
+.titem .off { font-size: 11px; color: var(--muted); display: block; }
+.ed-preview canvas { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--line); border-radius: 6px; }
+.ed-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 14px; }
+.fbox { border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 10px; margin-top: 12px; }
+.fbox-h { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.fbox-h strong { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+.fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.chk { display: inline-flex; gap: 6px; align-items: center; font-size: 13.5px; cursor: pointer; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); padding: 2px; }
+.save-bar { position: sticky; bottom: env(safe-area-inset-bottom, 0px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 16px; box-shadow: 0 -2px 12px rgba(0,0,0,.06); }
+.save-bar .status { margin: 0; flex: 1 1 200px; }
+.confirm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13.5px; background: var(--accent-soft); padding: 8px 10px; border-radius: 8px; }
+.sec-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; margin: 18px 0 4px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<div id="app" data-keep></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" data-keep></script>
+<script id="main" data-keep>
+(function () {
+  "use strict";
+  // ---------- constants ----------
+  var MM_W = 420, MM_H = 148.5;            // one banner = half an A3 sheet
+  var EXPORT_W = 2480;                     // 150 dpi across 420 mm
+  var FONT_OPTS = [["bold", "Chữ đậm to (Anton)"], ["thin", "Chữ mảnh cao (Barlow)"], ["semi", "Chữ vừa (Barlow đậm)"], ["script", "Chữ ký (Great Vibes)"], ["sans", "Chữ thường (Be Vietnam)"]];
+  function fontStr(f, px) {
+    px = Math.max(4, Math.round(px));
+    if (f === "bold") return px + 'px "Anton", Impact, "Arial Black", sans-serif';
+    if (f === "thin") return '300 ' + px + 'px "Barlow Condensed", "Arial Narrow", sans-serif';
+    if (f === "semi") return '600 ' + px + 'px "Barlow Condensed", "Arial Narrow", sans-serif';
+    if (f === "script") return px + 'px "Great Vibes", "Segoe Script", cursive';
+    return '700 ' + px + 'px "Be Vietnam Pro", Arial, sans-serif';
+  }
+
+  // ---------- data ----------
+  // Templates are read from templates.json next to this page (kept on GitHub).
+  var DATA = { version: 1, templates: [] };
+  var loadState = "loading"; // loading | ok | error
+  function activeTemplates() { return DATA.templates.filter(function (t) { return t.active !== false; }); }
+  function tplById(id) { return DATA.templates.find(function (t) { return t.id === id; }) || activeTemplates()[0] || DATA.templates[0]; }
+  function uid() { return Math.random().toString(36).slice(2, 9); }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  // Customer names live only in memory: every visit starts with an empty list.
+  // Remove drafts that older versions of this page kept in the browser.
+  try { localStorage.removeItem("in-bang-giao-xe-draft-v1"); } catch (e) {}
+  function freshState() {
+    var sel = (activeTemplates()[0] || {}).id;
+    return { sel: sel, banners: sel ? [{ id: uid(), tpl: sel, vals: {}, copies: 1 }] : [], cut: true };
+  }
+  var state = freshState();
+  function saveDraft() {}
+  function resetList() {
+    var keepSel = state.sel, keepCut = state.cut;
+    state = freshState();
+    if (tplById(keepSel)) { state.sel = keepSel; state.banners.forEach(function (b) { b.tpl = keepSel; }); }
+    state.cut = keepCut;
+    if (mainRefs.fallback) mainRefs.fallback.innerHTML = "";
+    if (mainRefs.done) mainRefs.done.hidden = true;
+    setStatus("");
+    renderAll();
+    showStartModal();
+  }
+
+  // ---------- images ----------
+  var imgCache = new Map();
+  function loadImg(src) {
+    if (!src) return Promise.resolve(null);
+    if (!imgCache.has(src)) {
+      imgCache.set(src, new Promise(function (res) { var i = new Image(); i.onload = function () { res(i); }; i.onerror = function () { res(null); }; i.src = src; }));
+    }
+    return imgCache.get(src);
+  }
+
+  // ---------- drawing ----------
+  function rr(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
+  }
+  function balloon(ctx, x, y, r, c1, c2) {
+    var g = ctx.createRadialGradient(x - r * .35, y - r * .45, r * .08, x, y, r * 1.1);
+    g.addColorStop(0, c1); g.addColorStop(1, c2);
+    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(x, y, r * .86, r, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x, y + r * .96); ctx.lineTo(x - r * .11, y + r * 1.13); ctx.lineTo(x + r * .11, y + r * 1.13); ctx.closePath(); ctx.fillStyle = c2; ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.beginPath(); ctx.ellipse(x - r * .38, y - r * .42, r * .12, r * .22, -0.5, 0, Math.PI * 2); ctx.fill();
+  }
+  function gift(ctx, x, y, w, h, k) {
+    var g = ctx.createLinearGradient(x, y, x + w, y + h); g.addColorStop(0, "#f6dc8f"); g.addColorStop(1, "#c79a3b");
+    ctx.fillStyle = g; ctx.fillRect(x, y + h * .22, w, h * .78);
+    ctx.fillStyle = "#e9c873"; ctx.fillRect(x - w * .05, y, w * 1.1, h * .26);
+    ctx.fillStyle = "#fbf3dc"; ctx.fillRect(x + w * .44, y, w * .12, h);
+    ctx.fillRect(x - w * .05, y + h * .08, w * 1.1, h * .1);
+    ctx.strokeStyle = "#d4a644"; ctx.lineWidth = .5 * k;
+    ctx.beginPath(); ctx.ellipse(x + w * .38, y - h * .12, w * .14, h * .12, -0.5, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(x + w * .62, y - h * .12, w * .14, h * .12, 0.5, 0, Math.PI * 2); ctx.stroke();
+  }
+  function heart(ctx, x, y, s, c1, c2) {
+    var t = y - s / 2;
+    var g = ctx.createLinearGradient(x - s / 2, t, x + s / 2, t + s); g.addColorStop(0, c1); g.addColorStop(1, c2);
+    ctx.fillStyle = g; ctx.beginPath();
+    ctx.moveTo(x, t + s * .3);
+    ctx.bezierCurveTo(x, t, x - s / 2, t, x - s / 2, t + s * .3);
+    ctx.bezierCurveTo(x - s / 2, t + s * .6, x, t + s * .75, x, t + s);
+    ctx.bezierCurveTo(x, t + s * .75, x + s / 2, t + s * .6, x + s / 2, t + s * .3);
+    ctx.bezierCurveTo(x + s / 2, t, x, t, x, t + s * .3);
+    ctx.fill();
+  }
+  function decorLeft(ctx, cx, cy, k) {
+    ctx.save();
+    ctx.strokeStyle = "rgba(160,120,90,.6)"; ctx.lineWidth = .35 * k;
+    [[-9, -14], [4, -19], [-13, 6], [9, 9]].forEach(function (p) { ctx.beginPath(); ctx.moveTo(cx + p[0] * k, cy + p[1] * k); ctx.quadraticCurveTo(cx + p[0] * k * .5, cy + 6 * k, cx, cy + 10 * k); ctx.stroke(); });
+    ctx.shadowColor = "rgba(0,0,0,.15)"; ctx.shadowBlur = 2 * k; ctx.shadowOffsetY = .6 * k;
+    balloon(ctx, cx - 9 * k, cy - 15 * k, 7 * k, "#f6d3d7", "#c47a86");
+    balloon(ctx, cx + 4 * k, cy - 20 * k, 7.6 * k, "#fffaf0", "#d3c3a0");
+    gift(ctx, cx - 12 * k, cy - 3 * k, 13 * k, 11 * k, k);
+    gift(ctx, cx + 1 * k, cy - 5 * k, 11 * k, 10 * k, k);
+    balloon(ctx, cx - 13 * k, cy + 9 * k, 5.4 * k, "#f3c9cf", "#bf6f7d");
+    balloon(ctx, cx + 9 * k, cy + 10 * k, 5.2 * k, "#fffaf0", "#cdbd98");
+    ctx.restore();
+  }
+  function decorRight(ctx, cx, cy, k) {
+    ctx.save();
+    var bx = cx + 2 * k, by = cy + 22 * k;
+    var hs = [[-10, -12, 9], [0, -17, 10], [9, -10, 9], [-5, -4, 8], [6, -1, 8], [-12, 0, 6], [13, -18, 6]];
+    ctx.strokeStyle = "rgba(200,80,100,.5)"; ctx.lineWidth = .3 * k;
+    hs.forEach(function (h) { ctx.beginPath(); ctx.moveTo(cx + h[0] * k, cy + h[1] * k + h[2] * k * .5); ctx.lineTo(bx, by); ctx.stroke(); });
+    var cols = [["#fbd3dc", "#f08da3"], ["#ffe1e7", "#f3a3b4"], ["#f9b2c1", "#e05c78"], ["#ffd9e0", "#ec7d95"]];
+    ctx.shadowColor = "rgba(0,0,0,.12)"; ctx.shadowBlur = 1.5 * k;
+    hs.forEach(function (h, i) { var c = cols[i % cols.length]; heart(ctx, cx + h[0] * k, cy + h[1] * k, h[2] * k, c[0], c[1]); });
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#fde8ec"; ctx.fillRect(bx - 3 * k, by, 6 * k, 5 * k);
+    ctx.fillStyle = "#e0263f"; ctx.fillRect(bx - .7 * k, by, 1.4 * k, 5 * k);
+    ctx.restore();
+  }
+  function drawLogo(ctx, fr, W, k, logoImg, sc) {
+    var w = 44 * k, h = 19 * k, x = -w / 2, r = 4 * k;
+    ctx.save();
+    ctx.translate(W / 2, 0); ctx.scale(sc || 1, sc || 1);
+    ctx.fillStyle = fr.logoColor || "#c8102e";
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + w, 0); ctx.lineTo(x + w, h - r); ctx.quadraticCurveTo(x + w, h, x + w - r, h); ctx.lineTo(x + r, h); ctx.quadraticCurveTo(x, h, x, h - r); ctx.closePath(); ctx.fill();
+    if (logoImg) {
+      var pad = 2.5 * k, bw = w - pad * 2, bh = h - pad * 2, s = Math.min(bw / logoImg.width, bh / logoImg.height);
+      ctx.drawImage(logoImg, x + (w - logoImg.width * s) / 2, (h - logoImg.height * s) / 2, logoImg.width * s, logoImg.height * s);
+    } else {
+      ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+      ctx.save(); ctx.translate(0, 12.5 * k); ctx.transform(1, 0, -0.22, 1, 0, 0);
+      ctx.font = fontStr("bold", 11.5 * k); ctx.fillText(fr.logoText || "", 0, 0); ctx.restore();
+      ctx.font = fontStr("semi", 2.6 * k); ctx.fillText(fr.logoSub || "", 0, 16.4 * k);
+    }
+    ctx.restore();
+  }
+  function textFor(f, vals) {
+    var t = f.editable ? ((vals && vals[f.key] != null && String(vals[f.key]).trim() !== "") ? String(vals[f.key]) : f.text) : f.text;
+    t = (t || "").replace(/\s+/g, " ").trim();
+    if (f.upper) t = t.toLocaleUpperCase("vi");
+    return t;
+  }
+  // Draw one banner (420 x 148.5 mm) into ctx at offset (ox, oy), width W px.
+  function bannerLogo(b, t) { return (b && b.logo != null) ? !!b.logo : !!(t && t.frame && t.frame.logo); }
+  async function drawBanner(ctx, tpl, vals, ox, oy, W, opts) {
+    var H = W * MM_H / MM_W, k = W / MM_W, fr = tpl.frame || {};
+    var bg = await loadImg(tpl.bg), logo = await loadImg(fr.logoImg);
+    ctx.save(); ctx.translate(ox, oy);
+    ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
+    if (bg) ctx.drawImage(bg, 0, 0, W, H);
+    if (fr.border) {
+      ctx.strokeStyle = fr.borderColor || "#e3242b"; ctx.lineWidth = 1.5 * k;
+      rr(ctx, 7 * k, 7 * k, W - 14 * k, H - 14 * k, 11 * k); ctx.stroke();
+    }
+    if (fr.decor) { decorLeft(ctx, 30 * k, 46 * k, k); decorRight(ctx, W - 34 * k, 44 * k, k); }
+    var showLogo = (opts && opts.logo != null) ? opts.logo : fr.logo;
+    if (showLogo) drawLogo(ctx, fr, W, k, logo, (opts && opts.logoScale) || 1);
+    (tpl.fields || []).forEach(function (f) {
+      var t = textFor(f, vals); if (!t) return;
+      var px = f.size * H; ctx.font = fontStr(f.font, px);
+      var w = ctx.measureText(t).width, max = f.maxW * W;
+      if (w > max) { px = px * max / w; ctx.font = fontStr(f.font, px); }
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      var x = (f.x == null ? .5 : f.x) * W, y = f.y * H;
+      if (f.stroke) { ctx.lineJoin = "round"; ctx.lineWidth = Math.max(1.2, px * .03); ctx.strokeStyle = f.stroke; ctx.strokeText(t, x, y); }
+      ctx.fillStyle = f.color || "#000"; ctx.fillText(t, x, y);
+    });
+    ctx.restore();
+  }
+  function bannerCanvas(W) { var c = document.createElement("canvas"); c.width = W; c.height = Math.round(W * MM_H / MM_W); return c; }
+  async function renderBannerTo(canvas, tpl, vals) {
+    var ctx = canvas.getContext("2d"); ctx.clearRect(0, 0, canvas.width, canvas.height);
+    await drawBanner(ctx, tpl, vals, 0, 0, canvas.width);
+  }
+  // A3 landscape sheet: 420 x 297 mm, two banners stacked.
+  async function renderSheet(canvas, pair, W, cut) {
+    var H = Math.round(W * 297 / 420), h = W * MM_H / MM_W;
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H);
+    for (var i = 0; i < pair.length; i++) {
+      if (!pair[i]) continue;
+      var tp = tplById(pair[i].tpl);
+      await drawBanner(ctx, tp, pair[i].vals, 0, i * h, W, { logo: bannerLogo(pair[i], tp), logoScale: pair[i].logoScale || 1 });
+    }
+    if (cut) {
+      ctx.save(); ctx.strokeStyle = "#9a9a9a"; ctx.lineWidth = Math.max(1, W / 1400); ctx.setLineDash([W / 140, W / 210]);
+      ctx.beginPath(); ctx.moveTo(0, h); ctx.lineTo(W, h); ctx.stroke(); ctx.restore();
+    }
+  }
+  function expandedBanners() {
+    var out = [];
+    state.banners.forEach(function (b) { var n = Math.max(1, Math.min(50, parseInt(b.copies, 10) || 1)); for (var i = 0; i < n; i++) out.push(b); });
+    return out;
+  }
+  function sheetsOf(list) { var s = []; for (var i = 0; i < list.length; i += 2) s.push([list[i], list[i + 1] || null]); return s; }
+
+  // ---------- GitHub (admin saving) ----------
+  // Only the admin has a GitHub token (kept in this browser only). Everyone else just reads templates.json.
+  var GH_KEY = "in-bang-giao-xe-github";
+  function ghLoad() { try { return JSON.parse(localStorage.getItem(GH_KEY) || "null") || {}; } catch (e) { return {}; } }
+  function ghStore(v) { try { if (v) localStorage.setItem(GH_KEY, JSON.stringify(v)); else localStorage.removeItem(GH_KEY); } catch (e) {} }
+  function ghGuessRepo() {
+    var m = location.hostname.match(/^([a-z0-9-]+)\.github\.io$/i);
+    var seg = location.pathname.split("/").filter(Boolean)[0];
+    return { owner: m ? m[1] : "", repo: m ? (seg && !/\.html$/i.test(seg) ? seg : m[1] + ".github.io") : "" };
+  }
+  var gh = ghLoad();
+  var caps = { canEdit: false };
+  async function ghApi(path, opts) {
+    opts = opts || {};
+    var headers = { "Accept": "application/vnd.github+json", "Authorization": "Bearer " + gh.token, "X-GitHub-Api-Version": "2022-11-28" };
+    if (opts.body) headers["Content-Type"] = "application/json";
+    return fetch("https://api.github.com/repos/" + encodeURIComponent(gh.owner) + "/" + encodeURIComponent(gh.repo) + path, { method: opts.method || "GET", headers: headers, body: opts.body, cache: "no-store" });
+  }
+  // Returns "" when the token can write to the repo, otherwise a message for the admin.
+  async function ghCheck() {
+    if (!gh.token || !gh.owner || !gh.repo) return "Chưa nhập đủ thông tin.";
+    try {
+      var r = await ghApi("");
+      if (r.status === 401) return "Mã token sai hoặc đã hết hạn.";
+      if (r.status === 404) return "Không thấy kho " + gh.owner + "/" + gh.repo + ", hoặc token chưa được cấp quyền vào kho này.";
+      if (!r.ok) return "GitHub báo lỗi " + r.status + ".";
+      var j = await r.json();
+      if (!j.permissions || !j.permissions.push) return "Token chỉ có quyền đọc. Cần cấp quyền Contents: Read and write.";
+      return "";
+    } catch (e) { return "Không kết nối được GitHub. Kiểm tra mạng rồi thử lại."; }
+  }
+  function utf8ToBase64(str) {
+    var bytes = new TextEncoder().encode(str), bin = "", chunk = 0x8000;
+    for (var i = 0; i < bytes.length; i += chunk) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    return btoa(bin);
+  }
+  async function ghSaveTemplates(data) {
+    var path = "/contents/templates.json";
+    var sha;
+    var r0 = await ghApi(path + "?ref=" + encodeURIComponent(gh.branch || "main"));
+    if (r0.ok) { sha = (await r0.json()).sha; }
+    else if (r0.status !== 404) throw new Error("GitHub báo lỗi " + r0.status + " khi đọc file mẫu.");
+    var body = { message: "Cập nhật mẫu bảng giao xe", content: utf8ToBase64(JSON.stringify(data)), branch: gh.branch || "main" };
+    if (sha) body.sha = sha;
+    var r = await ghApi(path, { method: "PUT", body: JSON.stringify(body) });
+    if (r.status === 409) throw new Error("File mẫu vừa được lưu từ nơi khác. Tải lại trang rồi lưu lại.");
+    if (r.status === 401 || r.status === 403) throw new Error("Token không có quyền ghi. Đăng nhập quản lý lại.");
+    if (!r.ok) { var j = {}; try { j = await r.json(); } catch (x) {} throw new Error("GitHub báo lỗi " + r.status + (j.message ? ": " + j.message : "")); }
+  }
+  if (gh.token) ghCheck().then(function (msg) { caps.canEdit = !msg; if (route() === "admin") renderAll(); else renderHeader(); });
+  var IS_TOUCH = (navigator.maxTouchPoints || 0) > 0 || /iPhone|iPad|Android/i.test(navigator.userAgent || "");
+
+  // ---------- DOM helpers ----------
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (a) {
+      var v = attrs[a];
+      if (a === "text") n.textContent = v;
+      else if (a === "class") n.className = v;
+      else if (a.slice(0, 2) === "on") n.addEventListener(a.slice(2), v);
+      else if (v === true) n.setAttribute(a, "");
+      else if (v !== false && v != null) n.setAttribute(a, v);
+    });
+    (kids || []).forEach(function (k) { if (k != null) n.appendChild(typeof k === "string" ? document.createTextNode(k) : k); });
+    return n;
+  }
+  var app = document.getElementById("app");
+
+  // ---------- routing ----------
+  function route() { return location.hash === "#quan-ly-mau" ? "admin" : "main"; }
+  window.addEventListener("hashchange", renderAll);
+
+  var headerEl;
+  function renderHeader() {
+    if (!headerEl) return;
+    headerEl.innerHTML = "";
+    var r = route();
+    var left = el("div", null, [
+      el("h1", null, [document.createTextNode("In "), el("span", { text: "Bảng Giao Xe" }), document.createTextNode(" A3")]),
+      el("p", { text: r === "admin" ? "Quản lý mẫu: thêm, sửa, ẩn mẫu cho mọi người chọn." : "Chọn mẫu, gõ tên khách, bấm In ngay hoặc tải file PDF khổ A3. Mỗi tờ A3 in được 2 bảng 42 × 14,85 cm." })
+    ]);
+    var nav = el("div", { class: "nav" });
+    if (r === "admin") {
+      if (caps.canEdit) nav.appendChild(el("button", { class: "ghost", text: "Đăng xuất", onclick: function () { gh = {}; ghStore(null); caps.canEdit = false; adm = null; location.hash = ""; } }));
+      nav.appendChild(el("button", { onclick: function () { location.hash = ""; }, text: "← Về trang in" }));
+    } else nav.appendChild(el("button", { class: "ghost", onclick: function () { location.hash = "quan-ly-mau"; }, text: "Quản lý mẫu" }));
+    headerEl.appendChild(left); headerEl.appendChild(nav);
+  }
+
+  function renderAll() {
+    if (loadState !== "ok") { renderLoading(); return; }
+    app.innerHTML = "";
+    headerEl = el("header", { class: "top" });
+    app.appendChild(headerEl);
+    renderHeader();
+    if (route() === "admin") renderAdmin(); else renderMain();
+  }
+
+  // ================= MAIN (print) =================
+  var mainRefs = {};
+  function renderMain() {
+    var left = el("div", { class: "col" });
+    var right = el("div", { class: "col preview-col" });
+    app.appendChild(el("div", { class: "layout" }, [left, right]));
+
+    // Step 1
+    var s1 = el("section", { class: "step" }, [
+      el("div", { class: "step-h" }, [el("span", { class: "step-n", text: "Bước 1" }), el("h2", { text: "Chọn mẫu" })])
+    ]);
+    var grid = el("div", { class: "tpl-grid" });
+    var act = activeTemplates();
+    if (!act.length) grid.appendChild(el("div", { class: "empty", text: "Chưa có mẫu nào. Người quản lý cần thêm mẫu trước." }));
+    act.forEach(function (t) {
+      var c = bannerCanvas(560);
+      var card = el("button", { class: "tpl-card", "aria-pressed": String(state.sel === t.id), onclick: function () { selectTpl(t.id); } }, [c, el("span", { class: "nm", text: t.name })]);
+      card.dataset.id = t.id;
+      grid.appendChild(card);
+      renderBannerTo(c, t, null);
+    });
+    s1.appendChild(grid);
+    mainRefs.grid = grid;
+    left.appendChild(s1);
+
+    // Step 2
+    var s2 = el("section", { class: "step" }, [
+      el("div", { class: "step-h" }, [el("span", { class: "step-n", text: "Bước 2" }), el("h2", { text: "Gõ tên khách hàng" })]),
+      el("p", { class: "hint", style: "margin-bottom:12px", text: "Mẫu đã soạn sẵn, bạn chỉ cần gõ tên khách. Nên in số khách chẵn (2, 4, 6…) để mỗi tờ A3 in đủ 2 bảng." })
+    ]);
+    var ta = el("textarea", { id: "paste-names", placeholder: "Anh Phúc & Chị Lệ\nChị Lan\nGia đình Anh Tuấn" });
+    var paste = el("details", { class: "paste" }, [
+      el("summary", { text: "Dán nhiều tên cùng lúc (mỗi dòng một bảng)" }),
+      ta,
+      el("div", { class: "paste-acts" }, [
+        el("button", { class: "primary", text: "Thêm các tên này", onclick: function () {
+          var lines = ta.value.split(/\r?\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+          if (!lines.length) return;
+          var t = tplById(state.sel);
+          var key = firstEditableKey(t);
+          // drop rows where nothing was typed yet
+          state.banners = state.banners.filter(function (b) { return Object.keys(b.vals || {}).some(function (k) { return String(b.vals[k] || "").trim(); }); });
+          lines.forEach(function (l) { var v = {}; if (key) v[key] = l; state.banners.push({ id: uid(), tpl: t.id, vals: v, copies: 1 }); });
+          ta.value = ""; changed(true);
+        } }),
+        el("button", { class: "ghost", text: "Xoá hết danh sách", onclick: function () { state.banners = []; changed(true); } })
+      ])
+    ]);
+    s2.appendChild(paste);
+    var rows = el("div", { class: "rows" });
+    mainRefs.rows = rows;
+    s2.appendChild(rows);
+    s2.appendChild(el("div", { class: "add-row" }, [
+      el("button", { text: "+ Thêm bảng", onclick: function () { var t = tplById(state.sel); state.banners.push({ id: uid(), tpl: t.id, vals: {}, copies: 1 }); changed(true); focusLast(); } }),
+      el("button", { class: "ghost", text: "Đổi tất cả sang mẫu đang chọn", onclick: function () { state.banners.forEach(function (b) { b.tpl = state.sel; }); changed(true); } })
+    ]));
+    left.appendChild(s2);
+
+    // Step 3
+    var s3 = el("section", { class: "step" }, [
+      el("div", { class: "step-h" }, [el("span", { class: "step-n", text: "Bước 3" }), el("h2", { text: "Xem trước & tải file in" })])
+    ]);
+    var sum = el("div", { class: "summary" });
+    mainRefs.sum = sum;
+    s3.appendChild(sum);
+    var nudge = el("div", { class: "nudge", role: "status" });
+    mainRefs.nudge = nudge;
+    s3.appendChild(nudge);
+    var sheets = el("div", { class: "sheets" });
+    mainRefs.sheets = sheets;
+    s3.appendChild(sheets);
+    var cutChk = el("input", { type: "checkbox", id: "cut-line", checked: state.cut, onchange: function () { state.cut = cutChk.checked; changed(false); } });
+    s3.appendChild(el("div", { class: "toggles" }, [el("label", null, [cutChk, document.createTextNode("In đường cắt giữa 2 bảng")])]));
+    var pr = el("button", { class: "primary big", id: "print-btn", text: "In ngay", onclick: printNow });
+    mainRefs.pr = pr;
+    s3.appendChild(pr);
+    var dl = el("button", { class: "big", id: "dl-btn", style: "margin-top:8px", text: "Tải file PDF A3 về máy", onclick: downloadPdf });
+    mainRefs.dl = dl;
+    s3.appendChild(dl);
+    var st = el("div", { class: "status", role: "status" });
+    mainRefs.status = st;
+    s3.appendChild(st);
+    var done = el("div", { class: "nudge even", hidden: true }, [
+      el("strong", { text: "In xong rồi?" }),
+      el("p", { text: "Xoá danh sách tên để người sau dùng trang sạch. Tên khách không được lưu lại trên trang." }),
+      el("div", { class: "paste-acts" }, [el("button", { class: "primary", text: "Xoá danh sách, làm đợt mới", onclick: resetList })])
+    ]);
+    mainRefs.done = done;
+    s3.appendChild(done);
+    var fb = el("div", { class: "fallback-imgs" });
+    mainRefs.fallback = fb;
+    s3.appendChild(fb);
+    s3.appendChild(el("div", { class: "how" }, [
+      el("strong", { text: "Cách in" }),
+      el("ol", null, [
+        el("li", { text: "Bấm In ngay. Hộp thoại in mở ra, chọn máy in EPSON L18050." }),
+        el("li", { text: "Bấm “In bằng hộp thoại hệ thống” (Ctrl + Shift + P) rồi Preferences / Properties để mở bảng của máy EPSON: Paper Source, Document Size A3 297 x 420 mm, Borderless, Landscape, Paper Type, Quality, Color, Copies." }),
+        el("li", { text: "Khổ giấy A3, hướng Ngang, tỉ lệ 100% (Actual size), lề None, rồi bấm In." }),
+        el("li", { text: "Muốn giữ file: bấm Tải file PDF A3 về máy, mở file rồi in như trên." }),
+        el("li", { text: "Cắt theo đường giữa để được 2 bảng 42 × 14,85 cm." })
+      ])
+    ]));
+    right.appendChild(s3);
+
+    renderRows();
+    schedulePreview();
+  }
+  function firstEditableKey(t) { var f = (t.fields || []).find(function (f) { return f.editable; }); return f ? f.key : null; }
+  function focusLast() { setTimeout(function () { var ins = mainRefs.rows && mainRefs.rows.querySelectorAll("input.name-in"); if (ins && ins.length) ins[ins.length - 1].focus(); }, 30); }
+  function selectTpl(id) {
+    state.sel = id;
+    mainRefs.grid.querySelectorAll(".tpl-card").forEach(function (c) { c.setAttribute("aria-pressed", String(c.dataset.id === id)); });
+    // A single row with nothing typed follows the chosen template
+    if (state.banners.length === 1) state.banners[0].tpl = id;
+    if (!state.banners.length) state.banners.push({ id: uid(), tpl: id, vals: {}, copies: 1 });
+    changed(true);
+  }
+  function changed(structural) { saveDraft(); if (structural) renderRows(); schedulePreview(); }
+
+  function renderRows() {
+    var rows = mainRefs.rows; if (!rows) return;
+    rows.innerHTML = "";
+    if (!state.banners.length) { rows.appendChild(el("div", { class: "empty", text: "Chưa có bảng nào. Bấm “+ Thêm bảng” hoặc dán danh sách tên." })); return; }
+    var act = activeTemplates();
+    state.banners.forEach(function (b, i) {
+      var t = tplById(b.tpl);
+      if (!b.vals) b.vals = {};
+      var sel = el("select", { id: "tpl-" + b.id, "aria-label": "Mẫu của bảng " + (i + 1), onchange: function () { b.tpl = sel.value; changed(true); } });
+      var list = act.slice(); if (list.indexOf(t) < 0 && t) list.push(t);
+      list.forEach(function (tt) { var o = el("option", { value: tt.id, text: tt.name }); if (tt.id === t.id) o.selected = true; sel.appendChild(o); });
+      var top = el("div", { class: "row-top" }, [
+        el("span", { class: "lbl", text: "Bảng " + (i + 1) }),
+        el("div", { class: "acts" }, [
+          el("button", { class: "icon", title: "Lên trên", "aria-label": "Đưa bảng " + (i + 1) + " lên", disabled: i === 0, text: "↑", onclick: function () { move(i, -1); } }),
+          el("button", { class: "icon", title: "Xuống dưới", "aria-label": "Đưa bảng " + (i + 1) + " xuống", disabled: i === state.banners.length - 1, text: "↓", onclick: function () { move(i, 1); } }),
+          el("button", { class: "icon", title: "Nhân đôi", "aria-label": "Nhân đôi bảng " + (i + 1), text: "⧉", onclick: function () { var c = clone(b); c.id = uid(); state.banners.splice(i + 1, 0, c); changed(true); } }),
+          el("button", { class: "icon", title: "Xoá", "aria-label": "Xoá bảng " + (i + 1), text: "✕", onclick: function () { state.banners.splice(i, 1); changed(true); } })
+        ])
+      ]);
+      var fieldsWrap = el("div", { class: "row-fields" });
+      var editable = (t.fields || []).filter(function (f) { return f.editable; });
+      editable.forEach(function (f, fi) {
+        var inp = el("input", { type: "text", id: "in-" + b.id + "-" + f.key, class: fi === 0 ? "name-in" : "", value: b.vals[f.key] || "", placeholder: f.text || "", autocomplete: "off",
+          oninput: function () { b.vals[f.key] = inp.value; changed(false); },
+          onkeydown: function (e) { if (e.key === "Enter") { e.preventDefault(); var t2 = tplById(state.sel); state.banners.splice(i + 1, 0, { id: uid(), tpl: t2.id, vals: {}, copies: 1 }); changed(true); setTimeout(function () { var ins = mainRefs.rows.querySelectorAll("input.name-in"); if (ins[i + 1]) ins[i + 1].focus(); }, 30); } } });
+        fieldsWrap.appendChild(el("label", { class: "f" + (fi === 0 ? "" : " wide"), for: inp.id }, [document.createTextNode(f.label || "Chữ"), inp]));
+        if (fi === 0) {
+          var cp = el("input", { type: "number", id: "cp-" + b.id, min: "1", max: "50", value: String(b.copies || 1), oninput: function () { b.copies = Math.max(1, Math.min(50, parseInt(cp.value, 10) || 1)); changed(false); } });
+          fieldsWrap.appendChild(el("label", { class: "f", for: cp.id }, [document.createTextNode("Số bản"), cp]));
+        }
+      });
+      if (!editable.length) {
+        var cp2 = el("input", { type: "number", id: "cp-" + b.id, min: "1", max: "50", value: String(b.copies || 1), oninput: function () { b.copies = Math.max(1, Math.min(50, parseInt(cp2.value, 10) || 1)); changed(false); } });
+        fieldsWrap.appendChild(el("p", { class: "hint", text: "Mẫu này không có chữ cần gõ." }));
+        fieldsWrap.appendChild(el("label", { class: "f", for: cp2.id }, [document.createTextNode("Số bản"), cp2]));
+      }
+      var hasLogo = bannerLogo(b, t);
+      var lv = el("span", { class: "lv", text: Math.round((b.logoScale || 1) * 100) + "%" });
+      var lr = el("input", { type: "range", id: "ls-" + b.id, min: "0.6", max: "1.5", step: "0.05", value: String(b.logoScale || 1), disabled: !hasLogo,
+        oninput: function () { b.logoScale = parseFloat(lr.value); lv.textContent = Math.round(b.logoScale * 100) + "%"; changed(false); } });
+      var lchk = el("input", { type: "checkbox", id: "lg-" + b.id, checked: hasLogo, onchange: function () { b.logo = lchk.checked; lr.disabled = !lchk.checked; logoRow.classList.toggle("off", !lchk.checked); changed(false); } });
+      var logoRow = el("div", { class: "logo-row" + (hasLogo ? "" : " off") }, [
+        el("label", { class: "chk", for: lchk.id }, [lchk, document.createTextNode("Có logo")]),
+        el("label", { class: "logo-size", for: lr.id }, [el("span", { text: "Cỡ logo" }), lr, lv])
+      ]);
+      var row = el("div", { class: "row" }, [top, fieldsWrap, logoRow, el("label", { class: "f", for: sel.id }, [document.createTextNode("Mẫu"), sel])]);
+      rows.appendChild(row);
+    });
+  }
+  function move(i, d) { var j = i + d; if (j < 0 || j >= state.banners.length) return; var a = state.banners[i]; state.banners[i] = state.banners[j]; state.banners[j] = a; changed(true); }
+
+  var pvTimer, pvToken = 0;
+  function schedulePreview() { clearTimeout(pvTimer); pvTimer = setTimeout(renderPreview, 140); }
+  async function renderPreview() {
+    if (!mainRefs.sheets || !document.body.contains(mainRefs.sheets)) return;
+    var tok = ++pvToken;
+    var list = expandedBanners(), sh = sheetsOf(list);
+    mainRefs.sum.innerHTML = "";
+    mainRefs.sum.appendChild(el("span", { class: "pill", text: list.length + " bảng" }));
+    mainRefs.sum.appendChild(el("span", { class: "pill", text: sh.length + " tờ A3" }));
+    mainRefs.dl.disabled = !list.length;
+    var nb = mainRefs.nudge; nb.innerHTML = "";
+    if (list.length % 2 === 1) {
+      nb.className = "nudge odd";
+      nb.appendChild(el("div", null, [
+        el("strong", { text: "Số bảng đang lẻ (" + list.length + " bảng)" }),
+        el("p", { text: "Mỗi tờ A3 in được 2 bảng. Nếu in số lẻ, nửa dưới tờ cuối sẽ bỏ trống, tốn giấy. Nếu được, hãy gộp với 1 khách nữa cho chẵn." })
+      ]));
+      nb.appendChild(el("div", { class: "paste-acts" }, [
+        el("button", { class: "primary", text: "+ Thêm 1 khách cho chẵn", onclick: function () { var t = tplById(state.sel); state.banners.push({ id: uid(), tpl: t.id, vals: {}, copies: 1 }); changed(true); focusLast(); } })
+      ]));
+      nb.appendChild(el("p", { class: "hint", text: "Không có thêm khách thì vẫn in số lẻ được." }));
+    } else if (list.length) {
+      nb.className = "nudge even";
+      nb.appendChild(el("strong", { text: "Số bảng chẵn: in vừa đủ " + sh.length + " tờ A3, không thừa giấy." }));
+    } else { nb.className = "nudge"; }
+    var box = mainRefs.sheets;
+    // reuse canvases
+    while (box.children.length > sh.length) box.removeChild(box.lastChild);
+    if (!sh.length) { box.innerHTML = ""; box.appendChild(el("div", { class: "empty", text: "Bản xem trước sẽ hiện ở đây." })); return; }
+    if (box.firstChild && box.firstChild.classList && box.firstChild.classList.contains("empty")) box.innerHTML = "";
+    for (var i = 0; i < sh.length; i++) {
+      if (tok !== pvToken) return;
+      var wrap = box.children[i];
+      if (!wrap) { wrap = el("div", { class: "sheet" }, [el("canvas"), el("span", { class: "cap" })]); box.appendChild(wrap); }
+      wrap.lastChild.textContent = "Tờ " + (i + 1) + " / " + sh.length;
+      var c = document.createElement("canvas");
+      await renderSheet(c, sh[i], 1100, state.cut);
+      if (tok !== pvToken) return;
+      wrap.replaceChild(c, wrap.firstChild);
+    }
+  }
+
+  function setStatus(msg, kind) { if (!mainRefs.status) return; mainRefs.status.textContent = msg || ""; mainRefs.status.className = "status" + (kind ? " " + kind : ""); }
+  function todayStr() { var d = new Date(); function p(n) { return (n < 10 ? "0" : "") + n; } return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "-" + p(d.getHours()) + p(d.getMinutes()); }
+
+  async function buildSheetImages(withCut) {
+    var sh = sheetsOf(expandedBanners()), out = [];
+    for (var i = 0; i < sh.length; i++) {
+      var c = document.createElement("canvas");
+      await renderSheet(c, sh[i], EXPORT_W, !!withCut);
+      out.push(c);
+    }
+    return out;
+  }
+  async function downloadPdf() {
+    var list = expandedBanners(); if (!list.length) return;
+    mainRefs.dl.disabled = true; setStatus("Đang tạo file PDF…");
+    mainRefs.fallback.innerHTML = "";
+    try {
+      var canvases = await buildSheetImages();
+      if (!window.jspdf || !window.jspdf.jsPDF) throw { code: "nolib" };
+      var doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a3", compress: true });
+      canvases.forEach(function (c, i) {
+        if (i) doc.addPage("a3", "landscape");
+        doc.addImage(c.toDataURL("image/jpeg", 0.93), "JPEG", 0, 0, 420, 297, undefined, "FAST");
+        if (state.cut) { doc.setDrawColor(150); doc.setLineWidth(0.25); doc.setLineDashPattern([3, 2], 0); doc.line(0, MM_H, 420, MM_H); }
+      });
+      var blob = doc.output("blob");
+      var url = URL.createObjectURL(blob);
+      var a = el("a", { href: url, download: "bang-giao-xe-A3-" + todayStr() + ".pdf" });
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 120000);
+      setStatus("Đã tải file PDF (" + canvases.length + " tờ A3). Mở file và in khổ A3, hướng ngang, tỉ lệ 100%.", "ok");
+      mainRefs.done.hidden = false;
+    } catch (e) {
+      if (e && e.code === "nolib") setStatus("Không tạo được file PDF: máy cần có mạng Internet. Tải lại trang rồi thử lần nữa.", "err");
+      else showFallback(canvases || [], "Không tạo được file PDF.");
+    } finally { mainRefs.dl.disabled = false; }
+  }
+  // Print straight from the browser: one A3 landscape page per sheet image.
+  var printing = false;
+  async function printNow() {
+    var list = expandedBanners(); if (!list.length || printing) return;
+    printing = true; mainRefs.pr.disabled = true; setStatus("Đang chuẩn bị trang in…");
+    try {
+      var canvases = await buildSheetImages(state.cut);
+      var area = document.getElementById("print-area");
+      if (!area) { area = el("div", { id: "print-area" }); document.body.appendChild(area); }
+      area.innerHTML = "";
+      var loads = canvases.map(function (c, i) {
+        return new Promise(function (res) { var img = el("img", { alt: "Tờ A3 số " + (i + 1) }); img.onload = res; img.onerror = res; img.src = c.toDataURL("image/jpeg", 0.95); area.appendChild(img); });
+      });
+      await Promise.all(loads);
+      setStatus("Đã mở hộp thoại in: chọn máy in, khổ A3, hướng Ngang, tỉ lệ 100%.", "ok");
+      mainRefs.done.hidden = false;
+      setTimeout(function () { window.print(); }, 50);
+    } catch (e) {
+      setStatus("Không mở được hộp thoại in. Hãy bấm Tải file PDF A3 về máy rồi in file đó.", "err");
+    } finally { printing = false; mainRefs.pr.disabled = false; }
+  }
+  window.addEventListener("afterprint", function () { var a = document.getElementById("print-area"); if (a) a.innerHTML = ""; });
+  function showFallback(canvases, why) {
+    setStatus(why + (IS_TOUCH
+      ? " Nhấn giữ từng ảnh A3 bên dưới → Lưu vào Ảnh (hoặc Chia sẻ), rồi in ảnh ở khổ A3 ngang, vừa trang (Fit)."
+      : " Nhấn chuột phải vào từng ảnh A3 bên dưới → Lưu ảnh, rồi in ảnh ở khổ A3 ngang, vừa trang (Fit)."), "warn");
+    mainRefs.fallback.innerHTML = "";
+    canvases.forEach(function (c, i) {
+      mainRefs.fallback.appendChild(el("figure", { class: "fb-fig" }, [
+        el("img", { src: c.toDataURL("image/jpeg", 0.92), alt: "Tờ A3 số " + (i + 1) }),
+        el("figcaption", { class: "hint", text: "Tờ A3 số " + (i + 1) + " / " + canvases.length })
+      ]));
+    });
+    setTimeout(function () { try { mainRefs.fallback.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }, 50);
+    mainRefs.done.hidden = false;
+  }
+
+  // ================= ADMIN (templates) =================
+  var adm = null; // {list: [...], cur: id, confirmDel: id}
+  function renderAdmin() {
+    if (!caps.canEdit) {
+      var guess = ghGuessRepo();
+      var ownerIn = el("input", { type: "text", id: "gh-owner", autocomplete: "off", value: gh.owner || guess.owner, placeholder: "ten-tai-khoan-github" });
+      var repoIn = el("input", { type: "text", id: "gh-repo", autocomplete: "off", value: gh.repo || guess.repo, placeholder: "in-bang-giao-xe" });
+      var tokIn = el("input", { type: "password", id: "gh-token", autocomplete: "off", placeholder: "github_pat_…" });
+      var msg = el("p", { class: "status", role: "status" });
+      var form = el("form", { class: "step login", onsubmit: async function (e) {
+        e.preventDefault(); msg.textContent = "Đang kiểm tra với GitHub…"; msg.className = "status";
+        gh = { owner: ownerIn.value.trim(), repo: repoIn.value.trim(), token: tokIn.value.trim(), branch: "main" };
+        var err = await ghCheck();
+        if (!err) { ghStore(gh); caps.canEdit = true; renderAll(); }
+        else { gh = {}; msg.textContent = err; msg.className = "status err"; }
+      } }, [
+        el("div", { class: "step-h" }, [el("h2", { text: "Đăng nhập quản lý mẫu" })]),
+        el("p", { class: "hint", text: "Chỉ người có mã token GitHub của kho chứa trang này mới sửa và lưu được mẫu. Mã chỉ lưu trên trình duyệt máy này." }),
+        el("label", { class: "f", for: "gh-owner" }, [document.createTextNode("Tên tài khoản GitHub"), ownerIn]),
+        el("label", { class: "f", for: "gh-repo" }, [document.createTextNode("Tên kho chứa (repository)"), repoIn]),
+        el("label", { class: "f", for: "gh-token" }, [document.createTextNode("Mã token GitHub"), tokIn]),
+        el("div", { class: "add-row" }, [el("button", { class: "primary", type: "submit", text: "Đăng nhập" }), el("button", { type: "button", text: "← Về trang in", onclick: function () { location.hash = ""; } })]),
+        msg
+      ]);
+      app.appendChild(form);
+      setTimeout(function () { (ownerIn.value ? tokIn : ownerIn).focus(); }, 30);
+      return;
+    }
+    if (!adm) adm = { list: clone(DATA.templates), cur: (DATA.templates[0] || {}).id, confirmDel: null, dirty: false };
+    var wrap = el("div", { class: "admin" });
+    var side = el("div", { class: "col" });
+    var main = el("div", { class: "col" });
+    wrap.appendChild(side); wrap.appendChild(main);
+    app.appendChild(wrap);
+
+    var tl = el("div", { class: "tlist" });
+    adm.list.forEach(function (t) {
+      var c = bannerCanvas(240);
+      renderBannerTo(c, t, null);
+      tl.appendChild(el("button", { class: "titem", "aria-pressed": String(t.id === adm.cur), onclick: function () { adm.cur = t.id; adm.confirmDel = null; rerenderAdmin(); } }, [
+        c, el("span", { class: "nm" }, [document.createTextNode(t.name || "(chưa đặt tên)"), t.active === false ? el("span", { class: "off", text: "Đang ẩn" }) : null])
+      ]));
+    });
+    side.appendChild(el("section", { class: "step" }, [
+      el("div", { class: "step-h" }, [el("h2", { text: "Danh sách mẫu" })]),
+      tl,
+      el("div", { class: "add-row" }, [el("button", { class: "primary", text: "+ Mẫu mới", onclick: function () {
+        var t = { id: "t-" + uid(), name: "Mẫu mới", active: true, bg: null, frame: { border: true, borderColor: "#e3242b", decor: true, logo: false, logoText: "TAF", logoSub: "TOYOTA AN THÀNH FUKUSHIMA", logoColor: "#c8102e", logoImg: null },
+          fields: [{ key: "name", label: "Tên khách hàng", text: "QUÝ KHÁCH HÀNG", editable: true, font: "bold", color: "#c8102e", stroke: "#f4c430", x: .5, y: .55, size: .36, maxW: .78, upper: true }] };
+        adm.list.push(t); adm.cur = t.id; dirty();
+      } })])
+    ]));
+
+    var t = adm.list.find(function (x) { return x.id === adm.cur; });
+    if (!t) { main.appendChild(el("div", { class: "step" }, [el("p", { class: "hint", text: "Chọn một mẫu bên trái hoặc tạo mẫu mới." })])); main.appendChild(saveBar()); return; }
+    main.appendChild(editor(t));
+    main.appendChild(saveBar());
+  }
+  function rerenderAdmin() { var y = window.scrollY; renderAll(); window.scrollTo(0, y); }
+  function dirty() { adm.dirty = true; rerenderAdmin(); }
+
+  var edPreview, edTimer;
+  function refreshEdPreview(t) { clearTimeout(edTimer); edTimer = setTimeout(function () { if (edPreview) renderBannerTo(edPreview, t, null); }, 60); }
+
+  function editor(t) {
+    var sec = el("section", { class: "step" });
+    edPreview = bannerCanvas(1400);
+    renderBannerTo(edPreview, t, null);
+    sec.appendChild(el("div", { class: "ed-preview" }, [edPreview]));
+    sec.appendChild(el("p", { class: "hint", text: "Xem trước một bảng 42 × 14,85 cm. Ô có “Cho phép gõ” sẽ hiện ra cho mọi người nhập." }));
+    function upd() { adm.dirty = true; refreshEdPreview(t); setSaveStatus("Có thay đổi chưa lưu.", "warn"); }
+
+    var nameIn = el("input", { type: "text", id: "ed-name", value: t.name || "", oninput: function () { t.name = nameIn.value; upd(); } });
+    var actChk = el("input", { type: "checkbox", id: "ed-active", checked: t.active !== false, onchange: function () { t.active = actChk.checked; upd(); } });
+    var fr = t.frame = t.frame || {};
+    function chk(id, key, label) { var c = el("input", { type: "checkbox", id: id, checked: !!fr[key], onchange: function () { fr[key] = c.checked; upd(); } }); return el("label", { class: "chk", for: id }, [c, document.createTextNode(label)]); }
+    var bcol = el("input", { type: "color", id: "ed-bcol", value: fr.borderColor || "#e3242b", oninput: function () { fr.borderColor = bcol.value; upd(); } });
+    var ltxt = el("input", { type: "text", id: "ed-ltxt", value: fr.logoText || "", oninput: function () { fr.logoText = ltxt.value; upd(); } });
+    var lsub = el("input", { type: "text", id: "ed-lsub", value: fr.logoSub || "", oninput: function () { fr.logoSub = lsub.value; upd(); } });
+    var lcol = el("input", { type: "color", id: "ed-lcol", value: fr.logoColor || "#c8102e", oninput: function () { fr.logoColor = lcol.value; upd(); } });
+
+    var bgFile = el("input", { type: "file", id: "ed-bg", accept: "image/png,image/jpeg,image/webp", onchange: async function () {
+      var f = bgFile.files[0]; if (!f) return;
+      t.bg = await imageToDataUrl(f, EXPORT_W, Math.round(EXPORT_W * MM_H / MM_W), "cover", "image/jpeg");
+      fr.border = false; fr.decor = false; fr.logo = false; dirty();
+    } });
+    var logoFile = el("input", { type: "file", id: "ed-logo", accept: "image/png,image/jpeg,image/webp,image/svg+xml", onchange: async function () {
+      var f = logoFile.files[0]; if (!f) return;
+      fr.logoImg = await imageToDataUrl(f, 700, 320, "contain", "image/png"); fr.logo = true; dirty();
+    } });
+
+    sec.appendChild(el("div", { class: "ed-grid" }, [
+      el("label", { class: "f", for: "ed-name" }, [document.createTextNode("Tên mẫu (mọi người thấy tên này)"), nameIn]),
+      el("div", { class: "f" }, [el("span", { text: "Hiển thị" }), el("label", { class: "chk", for: "ed-active" }, [actChk, document.createTextNode("Cho mọi người chọn mẫu này")])])
+    ]));
+
+    sec.appendChild(el("div", { class: "sec-title", text: "Hình nền" }));
+    sec.appendChild(el("p", { class: "hint", text: "Cách đẹp nhất: xuất file thiết kế (Illustrator/Photoshop) khổ 42 × 14,85 cm KHÔNG có tên khách, rồi tải lên đây. Trang sẽ tự đặt chữ lên trên. Nếu không có hình nền, trang vẽ khung viền đỏ, bóng bay và logo mặc định." }));
+    sec.appendChild(el("div", { class: "ed-grid" }, [
+      el("label", { class: "f", for: "ed-bg" }, [document.createTextNode(t.bg ? "Đổi hình nền (PNG/JPG)" : "Tải hình nền (PNG/JPG)"), bgFile]),
+      t.bg ? el("div", { class: "f" }, [el("span", { text: "Đang dùng hình nền" }), el("button", { text: "Bỏ hình nền", onclick: function () { t.bg = null; fr.border = true; dirty(); } })]) : null
+    ]));
+    sec.appendChild(el("div", { class: "sec-title", text: "Khung & trang trí vẽ sẵn" }));
+    sec.appendChild(el("div", { class: "ed-grid" }, [
+      el("div", { class: "f" }, [chk("ed-border", "border", "Khung viền bo góc"), chk("ed-decor", "decor", "Bóng bay & tim hai bên"), chk("ed-logo-on", "logo", "Tab logo phía trên")]),
+      el("label", { class: "f", for: "ed-bcol" }, [document.createTextNode("Màu viền"), bcol]),
+      el("label", { class: "f", for: "ed-lcol" }, [document.createTextNode("Màu tab logo"), lcol])
+    ]));
+    sec.appendChild(el("div", { class: "ed-grid" }, [
+      el("label", { class: "f", for: "ed-logo" }, [document.createTextNode(fr.logoImg ? "Đổi ảnh logo" : "Ảnh logo (PNG nền trong suốt, tuỳ chọn)"), logoFile]),
+      fr.logoImg ? el("div", { class: "f" }, [el("span", { text: "Đang dùng ảnh logo" }), el("button", { text: "Bỏ ảnh logo", onclick: function () { fr.logoImg = null; dirty(); } })]) : null,
+      fr.logoImg ? null : el("label", { class: "f", for: "ed-ltxt" }, [document.createTextNode("Chữ logo"), ltxt]),
+      fr.logoImg ? null : el("label", { class: "f", for: "ed-lsub" }, [document.createTextNode("Dòng nhỏ dưới logo"), lsub])
+    ]));
+
+    sec.appendChild(el("div", { class: "sec-title", text: "Các dòng chữ" }));
+    (t.fields || []).forEach(function (f, i) { sec.appendChild(fieldBox(t, f, i, upd)); });
+    sec.appendChild(el("div", { class: "add-row" }, [el("button", { text: "+ Thêm dòng chữ", onclick: function () {
+      t.fields.push({ key: "f" + uid(), label: "Dòng chữ", text: "Chữ mới", editable: false, font: "script", color: "#111111", stroke: "", x: .5, y: .2, size: .18, maxW: .5, upper: false }); dirty();
+    } })]));
+
+    // template-level actions
+    var acts = el("div", { class: "add-row" });
+    acts.appendChild(el("button", { text: "Nhân bản mẫu này", onclick: function () { var c = clone(t); c.id = "t-" + uid(); c.name = (t.name || "Mẫu") + " (bản sao)"; adm.list.splice(adm.list.indexOf(t) + 1, 0, c); adm.cur = c.id; dirty(); } }));
+    var idx = adm.list.indexOf(t);
+    acts.appendChild(el("button", { text: "↑ Đưa lên", disabled: idx === 0, onclick: function () { adm.list.splice(idx, 1); adm.list.splice(idx - 1, 0, t); dirty(); } }));
+    acts.appendChild(el("button", { text: "↓ Đưa xuống", disabled: idx === adm.list.length - 1, onclick: function () { adm.list.splice(idx, 1); adm.list.splice(idx + 1, 0, t); dirty(); } }));
+    if (adm.confirmDel === t.id) {
+      acts.appendChild(el("div", { class: "confirm" }, [document.createTextNode("Xoá hẳn mẫu “" + (t.name || "") + "”?"),
+        el("button", { class: "primary", text: "Xoá", onclick: function () { adm.list.splice(idx, 1); adm.cur = (adm.list[0] || {}).id; adm.confirmDel = null; dirty(); } }),
+        el("button", { text: "Không", onclick: function () { adm.confirmDel = null; rerenderAdmin(); } })]));
+    } else {
+      acts.appendChild(el("button", { class: "ghost", text: "Xoá mẫu", onclick: function () { adm.confirmDel = t.id; rerenderAdmin(); } }));
+    }
+    sec.appendChild(el("div", { class: "sec-title", text: "Thao tác" }));
+    sec.appendChild(acts);
+    return sec;
+  }
+  function fieldBox(t, f, i, upd) {
+    var p = "fd-" + i + "-";
+    function txt(key, label) { var n = el("input", { type: "text", id: p + key, value: f[key] || "", oninput: function () { f[key] = n.value; upd(); } }); return el("label", { class: "f", for: n.id }, [document.createTextNode(label), n]); }
+    function rng(key, label, min, max, step) { var n = el("input", { type: "range", id: p + key, min: String(min), max: String(max), step: String(step), value: String(f[key] == null ? .5 : f[key]), oninput: function () { f[key] = parseFloat(n.value); upd(); } }); return el("label", { class: "f", for: n.id }, [document.createTextNode(label), n]); }
+    var fontSel = el("select", { id: p + "font", onchange: function () { f.font = fontSel.value; upd(); } });
+    FONT_OPTS.forEach(function (o) { var op = el("option", { value: o[0], text: o[1] }); if (f.font === o[0]) op.selected = true; fontSel.appendChild(op); });
+    var col = el("input", { type: "color", id: p + "color", value: f.color || "#000000", oninput: function () { f.color = col.value; upd(); } });
+    var strokeOn = el("input", { type: "checkbox", id: p + "son", checked: !!f.stroke, onchange: function () { f.stroke = strokeOn.checked ? (scol.value || "#f4c430") : ""; upd(); } });
+    var scol = el("input", { type: "color", id: p + "scol", value: f.stroke || "#f4c430", oninput: function () { if (strokeOn.checked) { f.stroke = scol.value; upd(); } } });
+    var ed = el("input", { type: "checkbox", id: p + "ed", checked: !!f.editable, onchange: function () { f.editable = ed.checked; upd(); } });
+    var up = el("input", { type: "checkbox", id: p + "up", checked: !!f.upper, onchange: function () { f.upper = up.checked; upd(); } });
+    var idx = t.fields.indexOf(f);
+    return el("div", { class: "fbox" }, [
+      el("div", { class: "fbox-h" }, [el("strong", { text: (f.label || "Dòng chữ") + (f.editable ? " · người dùng gõ" : " · cố định") }),
+        el("div", { class: "nav" }, [
+          el("button", { class: "icon", text: "↑", "aria-label": "Đưa dòng lên", disabled: idx === 0, onclick: function () { t.fields.splice(idx, 1); t.fields.splice(idx - 1, 0, f); dirty(); } }),
+          el("button", { class: "icon", text: "↓", "aria-label": "Đưa dòng xuống", disabled: idx === t.fields.length - 1, onclick: function () { t.fields.splice(idx, 1); t.fields.splice(idx + 1, 0, f); dirty(); } }),
+          el("button", { class: "icon", text: "✕", "aria-label": "Xoá dòng chữ", onclick: function () { t.fields.splice(idx, 1); dirty(); } })
+        ])]),
+      el("div", { class: "fgrid" }, [
+        txt("label", "Tên ô (hiện cho người dùng)"),
+        txt("text", f.editable ? "Chữ mặc định khi để trống" : "Nội dung chữ"),
+        el("label", { class: "f", for: fontSel.id }, [document.createTextNode("Kiểu chữ"), fontSel]),
+        el("label", { class: "f", for: col.id }, [document.createTextNode("Màu chữ"), col]),
+        el("div", { class: "f" }, [el("label", { class: "chk", for: strokeOn.id }, [strokeOn, document.createTextNode("Viền chữ")]), scol]),
+        el("div", { class: "f" }, [el("label", { class: "chk", for: ed.id }, [ed, document.createTextNode("Cho phép gõ")]), el("label", { class: "chk", for: up.id }, [up, document.createTextNode("Tự viết HOA")])])
+      ]),
+      el("div", { class: "fgrid" }, [
+        rng("y", "Vị trí dọc", 0.05, 0.95, 0.005),
+        rng("x", "Vị trí ngang", 0.1, 0.9, 0.005),
+        rng("size", "Cỡ chữ", 0.05, 0.6, 0.005),
+        rng("maxW", "Chiều rộng tối đa", 0.2, 0.95, 0.01)
+      ])
+    ]);
+  }
+  async function imageToDataUrl(file, W, H, mode, type) {
+    var url = URL.createObjectURL(file);
+    try {
+      var img = await new Promise(function (res, rej) { var i = new Image(); i.onload = function () { res(i); }; i.onerror = rej; i.src = url; });
+      var c = document.createElement("canvas"), ctx = c.getContext("2d");
+      if (mode === "cover") {
+        c.width = W; c.height = H; ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H);
+        var s = Math.max(W / img.width, H / img.height), w = img.width * s, h = img.height * s;
+        ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+      } else {
+        var s2 = Math.min(1, W / img.width, H / img.height);
+        c.width = Math.max(1, Math.round(img.width * s2)); c.height = Math.max(1, Math.round(img.height * s2));
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+      }
+      return c.toDataURL(type, 0.9);
+    } finally { URL.revokeObjectURL(url); }
+  }
+
+  var saveStatusEl;
+  function setSaveStatus(m, k) { if (saveStatusEl) { saveStatusEl.textContent = m; saveStatusEl.className = "status" + (k ? " " + k : ""); } }
+  function saveBar() {
+    saveStatusEl = el("div", { class: "status" + (adm.dirty ? " warn" : ""), role: "status", text: adm.dirty ? "Có thay đổi chưa lưu." : "Chưa có thay đổi." });
+    var btn = el("button", { class: "primary", text: "Lưu & cập nhật cho mọi người", onclick: async function () {
+      btn.disabled = true; setSaveStatus("Đang lưu…");
+      try {
+        var data = { version: 1, templates: adm.list };
+        await ghSaveTemplates(data);
+        DATA = clone(data);
+        adm.dirty = false;
+        setSaveStatus("Đã lưu lên GitHub. Khoảng 1–2 phút nữa mọi người tải lại trang (F5) sẽ thấy mẫu mới.", "ok");
+      } catch (e) {
+        setSaveStatus((e && e.message) || "Chưa lưu được. Thử lại sau ít phút.", "err");
+      }
+      btn.disabled = false;
+    } });
+    var undo = el("button", { class: "ghost", text: "Bỏ thay đổi", disabled: !adm.dirty, onclick: function () { adm = null; rerenderAdmin(); } });
+    return el("div", { class: "save-bar" }, [saveStatusEl, undo, btn]);
+  }
+
+  // ---------- start popup: even or odd ----------
+  function showStartModal() {
+    if (route() === "admin" || document.getElementById("start-modal")) return;
+    var prevFocus = document.activeElement;
+    function close() { bg.remove(); document.removeEventListener("keydown", onKey); if (prevFocus && prevFocus.focus) try { prevFocus.focus(); } catch (e) {} }
+    function choose(mode) {
+      state.mode = mode;
+      if (mode === "even" && expandedBanners().length % 2 === 1) {
+        var t = tplById(state.sel); state.banners.push({ id: uid(), tpl: t.id, vals: {}, copies: 1 });
+      }
+      close(); changed(true);
+      if (mode === "even") setTimeout(function () { var ins = mainRefs.rows && mainRefs.rows.querySelectorAll("input.name-in"); if (ins) { for (var i = 0; i < ins.length; i++) { if (!ins[i].value) { ins[i].focus(); return; } } } }, 50);
+    }
+    function onKey(e) { if (e.key === "Escape") close(); if (e.key === "Tab") { var f = bg.querySelectorAll("button"); var a = f[0], z = f[f.length - 1]; if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); } } }
+    var evenBtn = el("button", { class: "primary", onclick: function () { choose("even"); } }, [document.createTextNode("Số chẵn"), el("small", { text: "2, 4, 6… khách" })]);
+    var bg = el("div", { class: "modal-bg", id: "start-modal" }, [
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "start-q" }, [
+        el("h2", { id: "start-q", text: "Anh/chị in số lượng chẵn hay lẻ?" }),
+        el("div", { class: "choices" }, [
+          evenBtn,
+          el("button", { onclick: function () { choose("odd"); } }, [document.createTextNode("Số lẻ"), el("small", { text: "1, 3, 5… khách" })])
+        ]),
+        el("p", { class: "note" }, [el("strong", { text: "Lưu ý: " }), document.createTextNode("Khuyến khích anh/chị in số lượng chẵn để tiết kiệm giấy! Mỗi tờ A3 in được 2 bảng, in số lẻ thì nửa tờ cuối sẽ bỏ trống.")])
+      ])
+    ]);
+    document.body.appendChild(bg);
+    document.addEventListener("keydown", onKey);
+    setTimeout(function () { evenBtn.focus(); }, 30);
+  }
+
+  // ---------- boot ----------
+  function renderLoading() {
+    app.innerHTML = "";
+    headerEl = el("header", { class: "top" }); app.appendChild(headerEl); renderHeader();
+    app.appendChild(el("div", { class: "step" }, [el("p", { class: loadState === "error" ? "status err" : "hint", text: loadState === "error"
+      ? "Không tải được danh sách mẫu. Kiểm tra mạng rồi tải lại trang (F5)."
+      : "Đang tải mẫu…" })]));
+  }
+  renderLoading();
+  fetch("templates.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(); return r.json(); }).then(function (d) {
+    DATA = (d && Array.isArray(d.templates)) ? d : { version: 1, templates: [] };
+    loadState = "ok";
+    state = freshState();
+    renderAll();
+    showStartModal();
+  }).catch(function () { loadState = "error"; renderLoading(); });
+  var sample = "ÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÉÈẺẼẸÊẾỀỂỄỆÍÌỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤƯỨỪỬỮỰÝỲỶỸỴ chúc mừng nhận xe mới";
+  if (document.fonts && document.fonts.load) {
+    Promise.all([fontStr("bold", 40), fontStr("thin", 40), fontStr("semi", 40), fontStr("script", 40), fontStr("sans", 40)].map(function (f) { return document.fonts.load(f, sample).catch(function () {}); }))
+      .then(function () { return document.fonts.ready; })
+      .then(function () { if (loadState === "ok") renderAll(); });
+  }
+})();
+</script>
