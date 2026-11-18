@@ -126,6 +126,18 @@ details.paste textarea { margin-top: 10px; min-height: 110px; resize: vertical; 
 .fallback-imgs img { width: 100%; border: 1px solid var(--line); -webkit-touch-callout: default; }
 .fb-fig { margin: 0; display: grid; gap: 4px; }
 form.login { max-width: 480px; display: grid; gap: 12px; }
+.sub-title { font-family: var(--font-display); font-weight: 600; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.fgrid.wide { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+div.f { display: grid; gap: 4px; min-width: 0; align-content: start; font-size: 13px; color: var(--muted); font-weight: 500; }
+div.f .chk { color: var(--fg); }
+.numctl > label { font-size: 13px; color: var(--muted); font-weight: 500; }
+.numrow { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.numrow input[type="range"] { flex: 1 1 auto; min-width: 0; }
+.numrow input.num { width: 84px; flex: none; text-align: right; font-variant-numeric: tabular-nums; padding: 6px 8px; }
+.numrow input[type="text"] { flex: 1 1 auto; }
+.numrow .unit { font-size: 13px; color: var(--muted); width: 22px; flex: none; }
+.font-item { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+.font-item .nm { flex: 1 1 auto; min-width: 0; font-size: 17px; overflow-wrap: anywhere; }
 input[type="password"] { font: inherit; font-size: 15px; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 7px; padding: 8px 10px; width: 100%; min-width: 0; }
 .empty { padding: 18px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 8px; }
 /* admin */
@@ -160,15 +172,62 @@ input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); 
   // ---------- constants ----------
   var MM_W = 420, MM_H = 148.5;            // one banner = half an A3 sheet
   var EXPORT_W = 2480;                     // 150 dpi across 420 mm
-  var FONT_OPTS = [["bold", "Chữ đậm to (Anton)"], ["thin", "Chữ mảnh cao (Barlow)"], ["semi", "Chữ vừa (Barlow đậm)"], ["script", "Chữ ký (Great Vibes)"], ["sans", "Chữ thường (Be Vietnam)"]];
-  function fontStr(f, px) {
-    px = Math.max(4, Math.round(px));
-    if (f === "bold") return px + 'px "Anton", Impact, "Arial Black", sans-serif';
-    if (f === "thin") return '300 ' + px + 'px "Barlow Condensed", "Arial Narrow", sans-serif';
-    if (f === "semi") return '600 ' + px + 'px "Barlow Condensed", "Arial Narrow", sans-serif';
-    if (f === "script") return px + 'px "Great Vibes", "Segoe Script", cursive';
-    return '700 ' + px + 'px "Be Vietnam Pro", Arial, sans-serif';
+  // ---------- fonts ----------
+  // Older templates name a preset in f.font; newer ones store f.fontFamily / f.fontWeight / f.italic.
+  var PRESETS = { bold: ["Anton", 400], thin: ["Barlow Condensed", 300], semi: ["Barlow Condensed", 600], script: ["Great Vibes", 400], sans: ["Be Vietnam Pro", 700] };
+  // Google fonts that include Vietnamese letters, grouped for the picker.
+  var GOOGLE_FONTS = [
+    ["Chữ đậm, cao (tiêu đề)", ["Anton", "Oswald", "Barlow Condensed", "Roboto Condensed", "Saira Extra Condensed", "Encode Sans Condensed", "Paytone One", "Alfa Slab One", "Bungee"]],
+    ["Chữ thường, dễ đọc", ["Be Vietnam Pro", "Montserrat", "Roboto", "Nunito", "Quicksand", "Lexend"]],
+    ["Chữ có chân, sang trọng", ["Playfair Display", "Lora", "Noto Serif", "Merriweather", "Prata"]],
+    ["Chữ viết tay, chữ ký", ["Great Vibes", "Dancing Script", "Pacifico", "Lobster", "Charm", "Pattaya", "Patrick Hand", "Mali", "Itim"]]
+  ];
+  var FONT_WEIGHTS = [[100, "Rất mảnh (100)"], [200, "Mảnh hơn (200)"], [300, "Mảnh (300)"], [400, "Thường (400)"], [500, "Vừa (500)"], [600, "Hơi đậm (600)"], [700, "Đậm (700)"], [800, "Rất đậm (800)"], [900, "Đen (900)"]];
+  var FALLBACK = { "Anton": 'Impact, "Arial Black", sans-serif', "Great Vibes": '"Segoe Script", cursive' };
+  var SAMPLE_TEXT = "ÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÉÈẺẼẸÊẾỀỂỄỆÍÌỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤƯỨỪỬỮỰÝỲỶỸỴ chúc mừng nhận xe mới";
+  function fieldFont(f) {
+    if (f && f.fontFamily) return { family: f.fontFamily, weight: f.fontWeight || 400, italic: !!f.italic };
+    var p = PRESETS[f && f.font] || PRESETS.sans;
+    return { family: p[0], weight: p[1], italic: false };
   }
+  function fontCss(ff, px) {
+    px = Math.max(4, Math.round(px));
+    return (ff.italic ? "italic " : "") + ff.weight + " " + px + 'px "' + ff.family + '", ' + (FALLBACK[ff.family] || "Arial, sans-serif");
+  }
+  function fontStr(preset, px) { return fontCss(fieldFont({ font: preset }), px); }
+  var customFontReady = {};   // family name -> promise (fonts uploaded by the admin)
+  var googleCssReady = {};    // family name -> promise (stylesheet loaded)
+  var fontReady = {};         // css string -> promise
+  function registerCustomFont(c) {
+    if (!c || !c.name || !c.data || customFontReady[c.name]) return customFontReady[c.name];
+    try {
+      var face = new FontFace(c.name, "url(" + c.data + ")");
+      customFontReady[c.name] = face.load().then(function (f) { document.fonts.add(f); }).catch(function () {});
+    } catch (e) { customFontReady[c.name] = Promise.resolve(); }
+    return customFontReady[c.name];
+  }
+  function loadGoogleCss(family) {
+    if (googleCssReady[family]) return googleCssReady[family];
+    googleCssReady[family] = new Promise(function (res) {
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css?family=" + encodeURIComponent(family).replace(/%20/g, "+") +
+        ":100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&subset=vietnamese&display=swap";
+      link.onload = res; link.onerror = res;
+      document.head.appendChild(link);
+      setTimeout(res, 8000);
+    });
+    return googleCssReady[family];
+  }
+  function ensureFont(ff) {
+    var key = fontCss(ff, 40);
+    if (!fontReady[key]) {
+      var base = customFontReady[ff.family] || loadGoogleCss(ff.family);
+      fontReady[key] = base.then(function () { return document.fonts.load(key, SAMPLE_TEXT); }).catch(function () {});
+    }
+    return fontReady[key];
+  }
+  function allCustomFonts() { return (adm && adm.customFonts) || DATA.customFonts || []; }
 
   // ---------- data ----------
   // Templates are read from templates.json next to this page (kept on GitHub).
@@ -306,21 +365,35 @@ input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); 
     ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
     if (bg) ctx.drawImage(bg, 0, 0, W, H);
     if (fr.border) {
-      ctx.strokeStyle = fr.borderColor || "#e3242b"; ctx.lineWidth = 1.5 * k;
-      rr(ctx, 7 * k, 7 * k, W - 14 * k, H - 14 * k, 11 * k); ctx.stroke();
+      var bw = fr.borderW == null ? 1.5 : fr.borderW, bi = fr.borderInset == null ? 7 : fr.borderInset, br = fr.borderRadius == null ? 11 : fr.borderRadius;
+      if (bw > 0) {
+        ctx.strokeStyle = fr.borderColor || "#e3242b"; ctx.lineWidth = bw * k;
+        rr(ctx, bi * k, bi * k, W - 2 * bi * k, H - 2 * bi * k, Math.min(br, (MM_H - 2 * bi) / 2) * k); ctx.stroke();
+      }
     }
     if (fr.decor) { decorLeft(ctx, 30 * k, 46 * k, k); decorRight(ctx, W - 34 * k, 44 * k, k); }
     var showLogo = (opts && opts.logo != null) ? opts.logo : fr.logo;
     if (showLogo) drawLogo(ctx, fr, W, k, logo, (opts && opts.logoScale) || 1);
-    (tpl.fields || []).forEach(function (f) {
+    var fields = tpl.fields || [];
+    await Promise.all(fields.map(function (f) { return ensureFont(fieldFont(f)); }));
+    fields.forEach(function (f) {
       var t = textFor(f, vals); if (!t) return;
-      var px = f.size * H; ctx.font = fontStr(f.font, px);
+      var ff = fieldFont(f);
+      var base = f.size * H, px = base;
+      var hasLS = "letterSpacing" in ctx;
+      ctx.save();
+      function setFont(p) { ctx.font = fontCss(ff, p); if (hasLS) ctx.letterSpacing = ((f.spacing || 0) * k * p / base) + "px"; }
+      setFont(px);
       var w = ctx.measureText(t).width, max = f.maxW * W;
-      if (w > max) { px = px * max / w; ctx.font = fontStr(f.font, px); }
+      if (w > max) { px = px * max / w; setFont(px); }
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
       var x = (f.x == null ? .5 : f.x) * W, y = f.y * H;
-      if (f.stroke) { ctx.lineJoin = "round"; ctx.lineWidth = Math.max(1.2, px * .03); ctx.strokeStyle = f.stroke; ctx.strokeText(t, x, y); }
+      if (hasLS && f.spacing) x += (f.spacing * k * px / base) / 2;   // spacing is added after the last letter too
+      // Outline width: f.strokeW in mm (visible part); older templates used 1.5% of the font size.
+      var sw = f.strokeW != null ? f.strokeW * k * px / base : px * 0.015;
+      if (f.stroke && sw > 0) { ctx.lineJoin = "round"; ctx.miterLimit = 2; ctx.lineWidth = sw * 2; ctx.strokeStyle = f.stroke; ctx.strokeText(t, x, y); }
       ctx.fillStyle = f.color || "#000"; ctx.fillText(t, x, y);
+      ctx.restore();
     });
     ctx.restore();
   }
@@ -765,7 +838,7 @@ input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); 
       setTimeout(function () { (ownerIn.value ? tokIn : ownerIn).focus(); }, 30);
       return;
     }
-    if (!adm) adm = { list: clone(DATA.templates), cur: (DATA.templates[0] || {}).id, confirmDel: null, dirty: false };
+    if (!adm) adm = { list: clone(DATA.templates), cur: (DATA.templates[0] || {}).id, confirmDel: null, dirty: false, customFonts: clone(DATA.customFonts || []) };
     var wrap = el("div", { class: "admin" });
     var side = el("div", { class: "col" });
     var main = el("div", { class: "col" });
@@ -788,6 +861,42 @@ input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); 
           fields: [{ key: "name", label: "Tên khách hàng", text: "QUÝ KHÁCH HÀNG", editable: true, font: "bold", color: "#c8102e", stroke: "#f4c430", x: .5, y: .55, size: .36, maxW: .78, upper: true }] };
         adm.list.push(t); adm.cur = t.id; dirty();
       } })])
+    ]));
+
+    // Fonts uploaded by the admin (company fonts). Stored inside templates.json.
+    var fontList = el("div", { class: "tlist" });
+    adm.customFonts.forEach(function (c, ci) {
+      var kb = Math.round(c.data.length * 0.75 / 1024);
+      fontList.appendChild(el("div", { class: "font-item" }, [
+        el("span", { class: "nm", text: c.name, style: "font-family:\"" + c.name.replace(/"/g, "") + "\", sans-serif" }),
+        el("span", { class: "hint", text: kb + " KB" }),
+        el("button", { class: "icon", text: "✕", "aria-label": "Xoá font " + c.name, onclick: function () { adm.customFonts.splice(ci, 1); dirty(); } })
+      ]));
+    });
+    var fontMsg = el("p", { class: "status", role: "status" });
+    var fontFile = el("input", { type: "file", id: "font-file", accept: ".ttf,.otf,.woff,.woff2", onchange: function () {
+      var file = fontFile.files[0]; if (!file) return;
+      var ext = (file.name.split(".").pop() || "").toLowerCase();
+      var mime = { ttf: "font/ttf", otf: "font/otf", woff: "font/woff", woff2: "font/woff2" }[ext];
+      if (!mime) { fontMsg.textContent = "Chỉ nhận file .ttf, .otf, .woff, .woff2."; fontMsg.className = "status err"; return; }
+      if (file.size > 600 * 1024) { fontMsg.textContent = "File font quá lớn (" + Math.round(file.size / 1024) + " KB). Chọn file dưới 600 KB, ưu tiên .woff2."; fontMsg.className = "status err"; return; }
+      var reader = new FileReader();
+      reader.onload = function () {
+        var name = file.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim() || "Font riêng";
+        var base = name, n = 2;
+        while (adm.customFonts.some(function (c) { return c.name === name; }) || GOOGLE_FONTS.some(function (g) { return g[1].indexOf(name) >= 0; })) name = base + " " + (n++);
+        var data = "data:" + mime + ";base64," + String(reader.result).split(",")[1];
+        var entry = { name: name, data: data };
+        registerCustomFont(entry).then(function () { adm.customFonts.push(entry); dirty(); });
+      };
+      reader.readAsDataURL(file);
+    } });
+    side.appendChild(el("section", { class: "step" }, [
+      el("div", { class: "step-h" }, [el("h2", { text: "Font riêng" })]),
+      el("p", { class: "hint", style: "margin-bottom:8px", text: "Tải file font của công ty (.ttf/.otf/.woff/.woff2, dưới 600 KB, phải có tiếng Việt). Font sẽ hiện trong ô chọn Font của từng dòng chữ." }),
+      fontList,
+      el("label", { class: "f", for: "font-file", style: "margin-top:10px" }, [document.createTextNode("Tải font lên"), fontFile]),
+      fontMsg
     ]));
 
     var t = adm.list.find(function (x) { return x.id === adm.cur; });
@@ -845,6 +954,11 @@ input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); 
       el("label", { class: "f", for: "ed-bcol" }, [document.createTextNode("Màu viền"), bcol]),
       el("label", { class: "f", for: "ed-lcol" }, [document.createTextNode("Màu tab logo"), lcol])
     ]));
+    if (fr.border) sec.appendChild(el("div", { class: "fgrid wide", style: "margin-top:12px" }, [
+      numCtl("ed-bw", "Độ dày khung viền", "mm", 0, 8, 0.1, function () { return fr.borderW == null ? 1.5 : fr.borderW; }, function (v) { fr.borderW = v; }, upd),
+      numCtl("ed-bi", "Khung cách mép giấy", "mm", 0, 30, 0.5, function () { return fr.borderInset == null ? 7 : fr.borderInset; }, function (v) { fr.borderInset = v; }, upd),
+      numCtl("ed-br", "Bo góc khung", "mm", 0, 60, 0.5, function () { return fr.borderRadius == null ? 11 : fr.borderRadius; }, function (v) { fr.borderRadius = v; }, upd)
+    ]));
     sec.appendChild(el("div", { class: "ed-grid" }, [
       el("label", { class: "f", for: "ed-logo" }, [document.createTextNode(fr.logoImg ? "Đổi ảnh logo" : "Ảnh logo (PNG nền trong suốt, tuỳ chọn)"), logoFile]),
       fr.logoImg ? el("div", { class: "f" }, [el("span", { text: "Đang dùng ảnh logo" }), el("button", { text: "Bỏ ảnh logo", onclick: function () { fr.logoImg = null; dirty(); } })]) : null,
@@ -875,18 +989,66 @@ input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); 
     sec.appendChild(acts);
     return sec;
   }
+  // A slider paired with a number box. get/set work in the unit shown (cm or mm).
+  function numCtl(id, label, unit, min, max, step, get, set, upd) {
+    var dec = String(step).indexOf(".") >= 0 ? String(step).split(".")[1].length : 0;
+    function fmt(v) { return (Math.round(v * Math.pow(10, dec)) / Math.pow(10, dec)).toFixed(dec); }
+    var r = el("input", { type: "range", id: id + "-r", min: String(min), max: String(max), step: String(step), value: String(get()), "aria-label": label,
+      oninput: function () { var v = parseFloat(r.value); set(v); n.value = fmt(v); upd(); } });
+    var n = el("input", { type: "number", id: id, class: "num", min: String(min), max: String(max), step: String(step), value: fmt(get()),
+      oninput: function () { var v = parseFloat(n.value); if (isNaN(v)) return; set(v); r.value = String(v); upd(); } });
+    return el("div", { class: "f numctl" }, [
+      el("label", { for: id, text: label }),
+      el("div", { class: "numrow" }, [r, n, el("span", { class: "unit", text: unit })])
+    ]);
+  }
   function fieldBox(t, f, i, upd) {
     var p = "fd-" + i + "-";
+    // Move older preset fonts onto the explicit family/weight model so they can be edited.
+    if (!f.fontFamily) { var ff0 = fieldFont(f); f.fontFamily = ff0.family; f.fontWeight = ff0.weight; f.italic = false; }
     function txt(key, label) { var n = el("input", { type: "text", id: p + key, value: f[key] || "", oninput: function () { f[key] = n.value; upd(); } }); return el("label", { class: "f", for: n.id }, [document.createTextNode(label), n]); }
-    function rng(key, label, min, max, step) { var n = el("input", { type: "range", id: p + key, min: String(min), max: String(max), step: String(step), value: String(f[key] == null ? .5 : f[key]), oninput: function () { f[key] = parseFloat(n.value); upd(); } }); return el("label", { class: "f", for: n.id }, [document.createTextNode(label), n]); }
-    var fontSel = el("select", { id: p + "font", onchange: function () { f.font = fontSel.value; upd(); } });
-    FONT_OPTS.forEach(function (o) { var op = el("option", { value: o[0], text: o[1] }); if (f.font === o[0]) op.selected = true; fontSel.appendChild(op); });
+
+    // Font family: uploaded fonts, Google fonts with Vietnamese, or any Google font name typed in.
+    var known = {};
+    var fontSel = el("select", { id: p + "font", onchange: function () {
+      if (fontSel.value === "__other") { otherWrap.hidden = false; otherIn.focus(); return; }
+      otherWrap.hidden = true; f.fontFamily = fontSel.value; upd();
+    } });
+    var customs = allCustomFonts();
+    if (customs.length) {
+      var g0 = el("optgroup", { label: "Font riêng đã tải lên" });
+      customs.forEach(function (c) { known[c.name] = 1; g0.appendChild(el("option", { value: c.name, text: c.name })); });
+      fontSel.appendChild(g0);
+    }
+    GOOGLE_FONTS.forEach(function (g) {
+      var og = el("optgroup", { label: g[0] });
+      g[1].forEach(function (name) { known[name] = 1; og.appendChild(el("option", { value: name, text: name })); });
+      fontSel.appendChild(og);
+    });
+    if (!known[f.fontFamily]) fontSel.insertBefore(el("option", { value: f.fontFamily, text: f.fontFamily + " (đang dùng)" }), fontSel.firstChild);
+    fontSel.appendChild(el("option", { value: "__other", text: "Font Google khác… (gõ tên)" }));
+    fontSel.value = f.fontFamily;
+    var otherIn = el("input", { type: "text", id: p + "font-other", placeholder: "Ví dụ: Roboto Slab", autocomplete: "off" });
+    var otherBtn = el("button", { type: "button", text: "Dùng font này", onclick: function () {
+      var name = otherIn.value.trim().replace(/\s+/g, " "); if (!name) return;
+      f.fontFamily = name; dirty();
+    } });
+    var otherWrap = el("div", { class: "f", hidden: true }, [
+      el("label", { for: otherIn.id, text: "Tên font trên fonts.google.com (phải có tiếng Việt)" }),
+      el("div", { class: "numrow" }, [otherIn, otherBtn])
+    ]);
+    var wSel = el("select", { id: p + "weight", onchange: function () { f.fontWeight = parseInt(wSel.value, 10); upd(); } });
+    FONT_WEIGHTS.forEach(function (w) { var o = el("option", { value: String(w[0]), text: w[1] }); if ((f.fontWeight || 400) === w[0]) o.selected = true; wSel.appendChild(o); });
+    var ital = el("input", { type: "checkbox", id: p + "ital", checked: !!f.italic, onchange: function () { f.italic = ital.checked; upd(); } });
+
     var col = el("input", { type: "color", id: p + "color", value: f.color || "#000000", oninput: function () { f.color = col.value; upd(); } });
+    if (f.strokeW == null) f.strokeW = Math.round(f.size * MM_H * 0.015 * 10) / 10;
     var strokeOn = el("input", { type: "checkbox", id: p + "son", checked: !!f.stroke, onchange: function () { f.stroke = strokeOn.checked ? (scol.value || "#f4c430") : ""; upd(); } });
     var scol = el("input", { type: "color", id: p + "scol", value: f.stroke || "#f4c430", oninput: function () { if (strokeOn.checked) { f.stroke = scol.value; upd(); } } });
     var ed = el("input", { type: "checkbox", id: p + "ed", checked: !!f.editable, onchange: function () { f.editable = ed.checked; upd(); } });
     var up = el("input", { type: "checkbox", id: p + "up", checked: !!f.upper, onchange: function () { f.upper = up.checked; upd(); } });
     var idx = t.fields.indexOf(f);
+    var W_CM = MM_W / 10, H_CM = MM_H / 10;
     return el("div", { class: "fbox" }, [
       el("div", { class: "fbox-h" }, [el("strong", { text: (f.label || "Dòng chữ") + (f.editable ? " · người dùng gõ" : " · cố định") }),
         el("div", { class: "nav" }, [
@@ -897,16 +1059,29 @@ input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); 
       el("div", { class: "fgrid" }, [
         txt("label", "Tên ô (hiện cho người dùng)"),
         txt("text", f.editable ? "Chữ mặc định khi để trống" : "Nội dung chữ"),
-        el("label", { class: "f", for: fontSel.id }, [document.createTextNode("Kiểu chữ"), fontSel]),
-        el("label", { class: "f", for: col.id }, [document.createTextNode("Màu chữ"), col]),
-        el("div", { class: "f" }, [el("label", { class: "chk", for: strokeOn.id }, [strokeOn, document.createTextNode("Viền chữ")]), scol]),
         el("div", { class: "f" }, [el("label", { class: "chk", for: ed.id }, [ed, document.createTextNode("Cho phép gõ")]), el("label", { class: "chk", for: up.id }, [up, document.createTextNode("Tự viết HOA")])])
       ]),
+      el("div", { class: "sub-title", text: "Font chữ" }),
       el("div", { class: "fgrid" }, [
-        rng("y", "Vị trí dọc", 0.05, 0.95, 0.005),
-        rng("x", "Vị trí ngang", 0.1, 0.9, 0.005),
-        rng("size", "Cỡ chữ", 0.05, 0.6, 0.005),
-        rng("maxW", "Chiều rộng tối đa", 0.2, 0.95, 0.01)
+        el("label", { class: "f", for: fontSel.id }, [document.createTextNode("Font"), fontSel]),
+        el("label", { class: "f", for: wSel.id }, [document.createTextNode("Độ đậm"), wSel]),
+        el("div", { class: "f" }, [el("span", { text: "Kiểu" }), el("label", { class: "chk", for: ital.id }, [ital, document.createTextNode("Nghiêng (italic)")])]),
+        el("label", { class: "f", for: col.id }, [document.createTextNode("Màu chữ"), col])
+      ]),
+      otherWrap,
+      el("p", { class: "hint", text: "Font không có độ đậm đã chọn thì trình duyệt dùng độ đậm gần nhất." }),
+      el("div", { class: "sub-title", text: "Cỡ chữ & vị trí (bảng 42 × 14,85 cm)" }),
+      el("div", { class: "fgrid wide" }, [
+        numCtl(p + "size", "Cỡ chữ", "cm", 0.5, 9, 0.1, function () { return f.size * H_CM; }, function (v) { f.size = v / H_CM; }, upd),
+        numCtl(p + "maxW", "Rộng tối đa (chữ dài tự thu nhỏ)", "cm", 5, 42, 0.5, function () { return f.maxW * W_CM; }, function (v) { f.maxW = v / W_CM; }, upd),
+        numCtl(p + "y", "Tâm dòng cách mép trên", "cm", 0, 14.8, 0.1, function () { return f.y * H_CM; }, function (v) { f.y = v / H_CM; }, upd),
+        numCtl(p + "x", "Tâm dòng cách mép trái (21 = giữa)", "cm", 0, 42, 0.1, function () { return (f.x == null ? .5 : f.x) * W_CM; }, function (v) { f.x = v / W_CM; }, upd),
+        numCtl(p + "sp", "Giãn chữ", "mm", -3, 20, 0.1, function () { return f.spacing || 0; }, function (v) { f.spacing = v; }, upd)
+      ]),
+      el("div", { class: "sub-title", text: "Viền chữ" }),
+      el("div", { class: "fgrid wide" }, [
+        el("div", { class: "f" }, [el("label", { class: "chk", for: strokeOn.id }, [strokeOn, document.createTextNode("Có viền chữ")]), el("label", { for: scol.id, class: "hint", text: "Màu viền" }), scol]),
+        numCtl(p + "sw", "Độ dày viền", "mm", 0, 6, 0.1, function () { return f.strokeW; }, function (v) { f.strokeW = v; }, upd)
       ])
     ]);
   }
@@ -936,6 +1111,9 @@ input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); 
       btn.disabled = true; setSaveStatus("Đang lưu…");
       try {
         var data = { version: 1, templates: adm.list };
+        if (adm.customFonts && adm.customFonts.length) data.customFonts = adm.customFonts;
+        var size = new Blob([JSON.stringify(data)]).size;
+        if (size > 3 * 1024 * 1024) throw new Error("File mẫu quá lớn (" + (size / 1048576).toFixed(1) + " MB). Xoá bớt font riêng hoặc hình nền rồi lưu lại.");
         await ghSaveTemplates(data);
         DATA = clone(data);
         adm.dirty = false;
@@ -990,16 +1168,14 @@ input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--line); 
   renderLoading();
   fetch("templates.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(); return r.json(); }).then(function (d) {
     DATA = (d && Array.isArray(d.templates)) ? d : { version: 1, templates: [] };
-    loadState = "ok";
-    state = freshState();
-    renderAll();
-    showStartModal();
+    var waits = (DATA.customFonts || []).map(registerCustomFont);
+    DATA.templates.forEach(function (t) { (t.fields || []).forEach(function (f) { waits.push(ensureFont(fieldFont(f))); }); });
+    return Promise.all(waits).then(function () {
+      loadState = "ok";
+      state = freshState();
+      renderAll();
+      showStartModal();
+    });
   }).catch(function () { loadState = "error"; renderLoading(); });
-  var sample = "ÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÉÈẺẼẸÊẾỀỂỄỆÍÌỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤƯỨỪỬỮỰÝỲỶỸỴ chúc mừng nhận xe mới";
-  if (document.fonts && document.fonts.load) {
-    Promise.all([fontStr("bold", 40), fontStr("thin", 40), fontStr("semi", 40), fontStr("script", 40), fontStr("sans", 40)].map(function (f) { return document.fonts.load(f, sample).catch(function () {}); }))
-      .then(function () { return document.fonts.ready; })
-      .then(function () { if (loadState === "ok") renderAll(); });
-  }
 })();
 </script>
